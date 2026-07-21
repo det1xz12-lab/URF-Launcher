@@ -18,6 +18,8 @@ namespace UrfLauncher
         public string ConnectUrl { get; set; }
         public string IpAddress { get; set; }
         public string VkUrl { get; set; }
+        public string DiscordUrl { get; set; }
+        public string NewsJsonUrl { get; set; }
         public string WorkshopId { get; set; }
         public string CollectionUrl => $"https://steamcommunity.com/sharedfiles/filedetails/?id={WorkshopId}";
         public string Description { get; set; }
@@ -26,6 +28,13 @@ namespace UrfLauncher
         public Color BgColor { get; set; }
         public Color CardColor { get; set; }
         public Color AccentColor { get; set; }
+    }
+
+    public class NewsItem
+    {
+        public string Title { get; set; }
+        public string Url { get; set; }
+        public DateTime PublishDate { get; set; }
     }
 
     public partial class Form1 : Form
@@ -45,7 +54,10 @@ namespace UrfLauncher
         private Button btnClearCache;
         private FlowLayoutPanel socialPanel;
         private Label lblLogo;
-        private Button btnVk;
+
+        private Panel newsPanel;
+        private Label lblNewsHeader;
+        private FlowLayoutPanel newsListContainer;
 
         public Form1()
         {
@@ -65,18 +77,28 @@ namespace UrfLauncher
             {
                 new PremiumServer
                 {
+                    Name = "FALLOUT RP",
+                    ConnectUrl = "steam://connect/46.174.50.193:27021",
+                    IpAddress = "46.174.50.193:27021",
+                    VkUrl = "https://vk.com/falloutrp",
+                    DiscordUrl = "https://discord.gg/s6yXZmg59b",
+                    NewsJsonUrl = "https://raw.githubusercontent.com/det1xz12-lab/URF-Launcher/main/news_fallout.json",
+                    WorkshopId = "3701259766",
+                    ImageUrls = new List<string> { "https://urf.im/static/img/fallout_franchise/img_1.jpg", "https://urf.im/static/img/fallout_franchise/img_2.jpg" },
+                    Description = "Fallout RP: New Vegas - это RP сервер в многопользовательской игре garry's mod, являющийся полным воплощением вселенной Fallout.",
+                    BgColor = Color.FromArgb(15, 30, 20), CardColor = Color.FromArgb(10, 20, 12), AccentColor = Color.FromArgb(50, 220, 90)
+                },
+                new PremiumServer
+                {
                     Name = "FNAF RP КР",
                     ConnectUrl = "steam://connect/46.174.48.152:27017",
                     IpAddress = "46.174.48.152:27017",
                     VkUrl = "https://vk.com/fnafrp",
+                    DiscordUrl = "https://discord.gg/cKu3nZUbYj",
+                    NewsJsonUrl = "https://raw.githubusercontent.com/det1xz12-lab/URF-Launcher/main/news_fnaf.json",
                     WorkshopId = "3543269106",
-                    ImageUrls = new List<string>
-                    {
-                        "https://urf.im/static/img/fnaf_russia/fnaf4.png",
-                        "https://urf.im/static/img/fnaf_russia/fnaf5.png",
-                        "https://urf.im/static/img/fnaf_russia/fnaf1.png"
-                    },
-                    Description = "FNAF RP - сервер в многопользовательской и garry's mod, позволяющий окунуться в atmosphere увлекательной и по своему страшной вселенной Five Nights at Freddy's. Именно ты решаешь кем ты хочешь стать: жутким аниматроником, работником пиццерии, блатным гопником, или простым городским жителем. Огромное количество профессий, игровых механик, и многого другого уже ждет тебя на сервере!\r\n\r\nНастало время выбрать свою роль в этом увлекательном мире вселенной Five Nights at Freddy's!",
+                    ImageUrls = new List<string> { "https://urf.im/static/img/fnaf_russia/fnaf4.png" },
+                    Description = "FNAF RP - сервер в многопользовательской игре garry's mod, позволяющий окунуться в атмосферу Five Nights at Freddy's.",
                     BgColor = Color.FromArgb(40, 12, 35), CardColor = Color.FromArgb(24, 6, 20), AccentColor = Color.FromArgb(210, 80, 230)
                 },
                 new PremiumServer
@@ -85,9 +107,11 @@ namespace UrfLauncher
                     ConnectUrl = "steam://connect/46.174.48.152:27020",
                     IpAddress = "46.174.48.152:27020",
                     VkUrl = "https://vk.com/alyxrp",
+                    DiscordUrl = "https://discord.gg/cZm4HSdqnC",
+                    NewsJsonUrl = "https://raw.githubusercontent.com/det1xz12-lab/URF-Launcher/main/news_alyx.json",
                     WorkshopId = "3704341067",
                     ImageUrls = new List<string> { "https://urf.im/static/img/alyx/screen_2.jpg", "https://urf.im/static/img/alyx/screen_4.jpg" },
-                    Description = "HLRP:Alyx - сервер в многопользовательской и garry's mod, где вы полностью погрузитесь во времена Half Life 2 после 7 часовой войны, когда люди начали убегать из городов и организовывать повстанческие группировки, и когда Гордон Фримэн примкнул к повстанцам и рука об руку начал с ними спасать мир от порабощения Альянсом сразитесь с Universal Union, которые недалекие умы называют комбайнами.\r\n\r\nПритеснение жителей Альянсом, сопротивление Повстанцев, рейды, перестрелки, шпионские вылазки, зачистки - всё это ждёт вас в мрачном порабощенном городе на нашем ХЛ2РП сервере.",
+                    Description = "HLRP:Alyx - сервер в многопользовательской игре garry's mod, где вы полностью погрузитесь во времена Half Life 2 после 7 часовой войны.",
                     BgColor = Color.FromArgb(38, 24, 15), CardColor = Color.FromArgb(24, 14, 8), AccentColor = Color.FromArgb(245, 150, 70)
                 },
                 new PremiumServer
@@ -96,43 +120,25 @@ namespace UrfLauncher
                     ConnectUrl = "steam://connect/46.174.50.193:27018",
                     IpAddress = "46.174.50.193:27018",
                     VkUrl = "https://vk.com/metro2033urfim",
+                    DiscordUrl = "https://discord.gg/AV5bUzu6vF",
+                    NewsJsonUrl = "https://raw.githubusercontent.com/det1xz12-lab/URF-Launcher/main/news_metro.json",
                     WorkshopId = "1750726415",
-                    ImageUrls = new List<string> { "https://urf.im/static/img/metro/img_5.jpg", "https://urf.im/static/img/metro/img_2.jpg" },
-                    Description = "Метро RP \"Мертвая Москва\" - это RP сервер в многопользовательской игре garry's mod, который закинет Вас в Москву, пережившую ядерную войну, чьи жители укрылись в местном городском метрополитене и начали там, на меленьких станциях и огромных туннелях, новую жизнь.\r\n\r\nСтань одним из жителей метро, начни свою историю, пройдя путь от обычного доходяги до предводителя одного из государств метрополитена!",
+                    ImageUrls = new List<string> { "https://urf.im/static/img/metro/img_5.jpg" },
+                    Description = "Метро RP \"Мертвая Москва\" - это RP сервер в многопользовательской игре garry's mod по мотивам вселенной Метро 2033.",
                     BgColor = Color.FromArgb(22, 22, 22), CardColor = Color.FromArgb(14, 14, 14), AccentColor = Color.FromArgb(255, 75, 25)
                 },
                 new PremiumServer
                 {
                     Name = "HALF-LIFE 2 RP",
-                    ConnectUrl = "steam://connect/46.174.48.152:27016",
-                    IpAddress = "46.174.48.152:27016",
-                    VkUrl = "https://vk.com/hl2rp",
-                    WorkshopId = "2800996404",
-                    ImageUrls = new List<string> { "https://urf.im/static/img/hl2/screen_2.png", "https://urf.im/static/img/hl2/screen_5.png" },
-                    Description = "HL2RP За Фрименом - это HL2RP сервер в многопользовательской игре garry's mod, где вы полностью погрузитесь во времена Half Life 2 после 7 часовой войны, когда люди начали убегать из городов и организовывать повстанческие группировки, и когда Гордон Фримэн примкнул к повстанцам и рука об руку начал с ними спасать мир от порабощения Альянсом сразитесь с Universal Union, которые недалекие умы называют комбайнами.\r\n\r\nПритеснение жителей Альянсом, сопротивление Повстанцев, рейды, перестрелки, шпионские вылазки, зачистки - всё это ждёт вас в мрачном порабощенном городе на нашем ХЛ2РП сервере.",
-                    BgColor = Color.FromArgb(25, 30, 36), CardColor = Color.FromArgb(14, 18, 22), AccentColor = Color.FromArgb(40, 230, 160)
-                },
-                new PremiumServer
-                {
-                    Name = "WW2 RP",
-                    ConnectUrl = "steam://connect/46.174.50.193:27017",
-                    IpAddress = "46.174.50.193:27017",
-                    VkUrl = "https://vk.com/ww2rp",
-                    WorkshopId = "3591521878",
-                    ImageUrls = new List<string> { "https://urf.im/static/img/ww2/screen_3.png", "https://urf.im/static/img/ww2/screen_5.png" },
-                    Description = "ВТОРАЯ МИРОВАЯ ВОЙНА, жизнь в оккупации - это Serious RP сервер в многопользовательской игре garry's mod, где вам предстоит ощутить на себе все тяготы и лишения жизни в оккупированном Париже. На дворе 1942 год, год определивший исход войны.\r\n\r\nВоенные парады, тяжелые дни оккупации, бравые офицеры, продажные генералы, нстоящие герои войны - всё это ждёт вас в оккупированном Париже.",
-                    BgColor = Color.FromArgb(28, 30, 22), CardColor = Color.FromArgb(16, 18, 12), AccentColor = Color.FromArgb(220, 175, 95)
-                },
-                new PremiumServer
-                {
-                    Name = "SCP RP",
-                    ConnectUrl = "steam://connect/46.174.48.152:27018",
-                    IpAddress = "46.174.48.152:27018",
-                    VkUrl = "https://vk.com/roleplayscp",
-                    WorkshopId = "3662413720",
-                    ImageUrls = new List<string> { "https://urf.im/static/img/scp/screen_3.jpg", "https://urf.im/static/img/scp/screen_4.jpg" },
-                    Description = "SCP RP Containment Breach - это RP сервер в многопользовательской игре garry's mod, где тебе придётся пройти не легкий путь для того что бы выбраться из бункера ЗОНЫ 51, где исследуются обьекты, которые смертельно опасны и страшны для людей. Конечно ты сможешь выбрать другой путь и сам поиграть за смертельно опасного SCP.\r\n\r\nОхранники, Страшные SCP, атмосфера ЗОНЫ 51, головокружительные захватывающие локации - всё это про наш SCP RP .",
-                    BgColor = Color.FromArgb(16, 24, 38), CardColor = Color.FromArgb(10, 15, 24), AccentColor = Color.FromArgb(30, 180, 255)
+                    ConnectUrl = "steam://connect/46.174.50.193:27015",
+                    IpAddress = "46.174.50.193:27015",
+                    VkUrl = "https://vk.com/city17rp",
+                    DiscordUrl = "https://discord.gg/R7x7tR6gQZ",
+                    NewsJsonUrl = "https://raw.githubusercontent.com/det1xz12-lab/URF-Launcher/main/news_hl2rp.json",
+                    WorkshopId = "1750726415",
+                    ImageUrls = new List<string> { "https://urf.im/static/img/c17/c17_1.jpg" },
+                    Description = "Классический Half-Life 2 RP сервер в тоталитарном Сити-17 под контролем Альянса.",
+                    BgColor = Color.FromArgb(18, 28, 38), CardColor = Color.FromArgb(10, 18, 26), AccentColor = Color.FromArgb(40, 160, 240)
                 }
             };
         }
@@ -188,8 +194,28 @@ namespace UrfLauncher
             };
             this.Controls.Add(pbServerScreenshot);
 
-            lblDescription = new Label { Location = new Point(670, 110), Size = new Size(440, 345), Font = new Font("Segoe UI Semibold", 10.5f), ForeColor = Color.White, TextAlign = ContentAlignment.TopLeft };
+            lblDescription = new Label { Location = new Point(670, 110), Size = new Size(440, 180), Font = new Font("Segoe UI Semibold", 9.5f), ForeColor = Color.White, TextAlign = ContentAlignment.TopLeft };
             this.Controls.Add(lblDescription);
+
+            newsPanel = new Panel { Location = new Point(670, 305), Size = new Size(440, 165), BackColor = Color.FromArgb(25, 0, 0, 0) };
+            newsPanel.Paint += (s, e) =>
+            {
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                GraphicsPath path = GetRoundRectPath(0, 0, newsPanel.Width, newsPanel.Height, 20);
+                newsPanel.Region = new Region(path);
+                using (Pen borderPen = new Pen(Color.FromArgb(50, selectedServer != null ? selectedServer.AccentColor : Color.White), 1))
+                {
+                    e.Graphics.DrawPath(borderPen, path);
+                }
+            };
+
+            lblNewsHeader = new Label { Text = "📢 ПОСЛЕДНИЕ АНОНСЫ И НОВОСТИ", Location = new Point(12, 10), AutoSize = true, Font = new Font("Segoe UI Black", 9f, FontStyle.Bold), ForeColor = Color.White };
+            newsPanel.Controls.Add(lblNewsHeader);
+
+            newsListContainer = new FlowLayoutPanel { Location = new Point(10, 32), Size = new Size(420, 125), FlowDirection = FlowDirection.TopDown, WrapContents = false, AutoScroll = true };
+            newsPanel.Controls.Add(newsListContainer);
+
+            this.Controls.Add(newsPanel);
 
             btnPlay = new Button { Text = "ПОДКЛЮЧИТЬСЯ", Font = new Font("Segoe UI Black", 18, FontStyle.Bold), ForeColor = Color.White, Location = new Point(40, 500), Size = new Size(420, 75), FlatStyle = FlatStyle.Flat, Cursor = Cursors.Hand };
             btnPlay.FlatAppearance.BorderSize = 0;
@@ -205,17 +231,6 @@ namespace UrfLauncher
 
             socialPanel = new FlowLayoutPanel { Location = new Point(670, 525), Size = new Size(440, 50), FlowDirection = FlowDirection.LeftToRight };
             this.Controls.Add(socialPanel);
-
-            btnVk = new Button { Text = "VKONTAKTE", Font = new Font("Segoe UI Black", 9, FontStyle.Bold), ForeColor = Color.FromArgb(200, 200, 200), FlatStyle = FlatStyle.Flat, AutoSize = true, Cursor = Cursors.Hand, Margin = new Padding(0, 0, 20, 0) };
-            btnVk.FlatAppearance.BorderSize = 0;
-            btnVk.FlatAppearance.MouseOverBackColor = Color.Transparent;
-            btnVk.MouseEnter += (s, e) => { if (selectedServer != null && !isContentErrorState) btnVk.ForeColor = selectedServer.AccentColor; };
-            btnVk.MouseLeave += (s, e) => btnVk.ForeColor = Color.FromArgb(200, 200, 200);
-            btnVk.Click += (s, e) => { if (btnVk.Tag != null) Process.Start(new ProcessStartInfo { FileName = btnVk.Tag.ToString(), UseShellExecute = true }); };
-            socialPanel.Controls.Add(btnVk);
-
-            AddSocialButton("DISCORD", "https://discord.com/invite/urf-im-219688289286750209");
-            AddSocialButton("WEBSITE", "https://urf.im");
         }
 
         private void SelectServer(PremiumServer server)
@@ -228,10 +243,16 @@ namespace UrfLauncher
             btnPlay.Font = new Font("Segoe UI Black", 18, FontStyle.Bold);
 
             this.BackColor = server.BgColor;
+            socialPanel.BackColor = server.BgColor;
             lblLogo.ForeColor = server.AccentColor;
             btnPlay.BackColor = server.AccentColor;
+            lblNewsHeader.ForeColor = server.AccentColor;
+            newsPanel.Invalidate();
 
-            btnVk.Tag = server.VkUrl;
+            socialPanel.Controls.Clear();
+            AddSocialButton("VKONTAKTE", server.VkUrl);
+            AddSocialButton("DISCORD", server.DiscordUrl);
+            AddSocialButton("WEBSITE", "https://urf.im");
 
             foreach (Button btn in topMenu.Controls)
             {
@@ -239,6 +260,145 @@ namespace UrfLauncher
             }
 
             _ = LoadServerLiveImageAsync(server);
+            _ = FetchJsonNewsAsync(server);
+        }
+
+        private async Task FetchJsonNewsAsync(PremiumServer server)
+        {
+            newsListContainer.Controls.Clear();
+            Label lblLoading = new Label { Text = "Загрузка новостей...", AutoSize = true, Font = new Font("Segoe UI", 8.5f, FontStyle.Italic), ForeColor = Color.Gray };
+            newsListContainer.Controls.Add(lblLoading);
+
+            List<NewsItem> items = await Task.Run(() => GetGitHubJsonNews(server.NewsJsonUrl, server.DiscordUrl));
+
+            if (selectedServer != server) return;
+
+            newsListContainer.Controls.Clear();
+
+            foreach (var item in items)
+            {
+                Panel newsCard = new Panel { Size = new Size(395, 36), Margin = new Padding(0, 0, 0, 4), Cursor = Cursors.Hand, BackColor = Color.FromArgb(20, 255, 255, 255) };
+
+                Label lblTitle = new Label
+                {
+                    Text = item.Title,
+                    Location = new Point(5, 3),
+                    Size = new Size(385, 18),
+                    Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                    ForeColor = Color.White,
+                    AutoEllipsis = true
+                };
+
+                Label lblDate = new Label
+                {
+                    Text = item.PublishDate.ToString("dd.MM.yyyy"),
+                    Location = new Point(5, 20),
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 7.5f),
+                    ForeColor = server.AccentColor
+                };
+
+                newsCard.Controls.Add(lblTitle);
+                newsCard.Controls.Add(lblDate);
+
+                Action openLink = () => { try { Process.Start(new ProcessStartInfo { FileName = item.Url, UseShellExecute = true }); } catch { } };
+                newsCard.Click += (s, e) => openLink();
+                lblTitle.Click += (s, e) => openLink();
+                lblDate.Click += (s, e) => openLink();
+
+                newsListContainer.Controls.Add(newsCard);
+            }
+        }
+
+        private List<NewsItem> GetGitHubJsonNews(string jsonUrl, string defaultDiscordUrl)
+        {
+            var list = new List<NewsItem>();
+
+            if (!string.IsNullOrEmpty(jsonUrl))
+            {
+                try
+                {
+                    string json = netClient.GetStringAsync(jsonUrl).Result;
+
+                    string[] rawItems = json.Split(new[] { "{" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (var raw in rawItems)
+                    {
+                        if (!raw.Contains("title")) continue;
+
+                        string title = ExtractJsonValue(raw, "title");
+                        string url = ExtractJsonValue(raw, "url");
+                        string dateStr = ExtractJsonValue(raw, "date");
+
+                        if (string.IsNullOrEmpty(url)) url = defaultDiscordUrl;
+
+                        DateTime date;
+                        if (!DateTime.TryParse(dateStr, out date)) date = DateTime.Now;
+
+                        list.Add(new NewsItem
+                        {
+                            Title = string.IsNullOrEmpty(title) ? "Новость проекта" : title,
+                            Url = url,
+                            PublishDate = date
+                        });
+
+                        if (list.Count >= 4) break;
+                    }
+                }
+                catch { }
+            }
+
+            if (list.Count == 0)
+            {
+                list.Add(new NewsItem { Title = "📢 Перейти в Discord сообщество", Url = defaultDiscordUrl, PublishDate = DateTime.Now });
+                list.Add(new NewsItem { Title = "💬 Чат игроков и поддержка", Url = defaultDiscordUrl, PublishDate = DateTime.Now.AddDays(-1) });
+            }
+
+            return list;
+        }
+
+        private string ExtractJsonValue(string jsonBlock, string key)
+        {
+            try
+            {
+                string search = $"\"{key}\":";
+                int startIndex = jsonBlock.IndexOf(search);
+                if (startIndex == -1) return "";
+
+                startIndex += search.Length;
+                int firstQuote = jsonBlock.IndexOf("\"", startIndex);
+                int secondQuote = jsonBlock.IndexOf("\"", firstQuote + 1);
+
+                if (firstQuote != -1 && secondQuote != -1)
+                {
+                    return jsonBlock.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
+                }
+            }
+            catch { }
+            return "";
+        }
+
+        private void AddSocialButton(string text, string url)
+        {
+            Label btn = new Label
+            {
+                Text = text,
+                Font = new Font("Segoe UI Black", 9, FontStyle.Bold),
+                ForeColor = Color.FromArgb(200, 200, 200),
+                BackColor = Color.Transparent,
+                AutoSize = true,
+                Cursor = Cursors.Hand,
+                Margin = new Padding(0, 5, 20, 0),
+                Tag = url
+            };
+
+            btn.MouseEnter += (s, e) => { if (selectedServer != null) btn.ForeColor = selectedServer.AccentColor; };
+            btn.MouseLeave += (s, e) => btn.ForeColor = Color.FromArgb(200, 200, 200);
+            btn.Click += (s, e) => {
+                if (btn.Tag != null) Process.Start(new ProcessStartInfo { FileName = btn.Tag.ToString(), UseShellExecute = true });
+            };
+
+            socialPanel.Controls.Add(btn);
         }
 
         private async void BtnClearCache_Click(object sender, EventArgs e)
@@ -246,40 +406,25 @@ namespace UrfLauncher
             string steamPath = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamPath", null) as string;
             if (string.IsNullOrEmpty(steamPath))
             {
-                MessageBox.Show("Не удалось автоматически найти установленный Steam в системе.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Не удалось найти Steam.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             string gmodPath = Path.Combine(steamPath.Replace('/', '\\'), @"steamapps\common\GarrysMod\garrysmod");
 
-            if (!Directory.Exists(gmodPath))
-            {
-                MessageBox.Show("Папка Garry's Mod не найдена по стандартному пути Steam. Убедитесь, что игра установлена.", "Папка не найдена", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var confirm = MessageBox.Show("Вы действительно хотите очистить кэш игры?\nЭто удалит временные файлы, загруженные аддоны серверов и исправит большинство Lua-ошибок / вылетов.", "Очистка кэша", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var confirm = MessageBox.Show("Очистить кэш игры для решения вылетов?", "Очистка кэша", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm != DialogResult.Yes) return;
 
-            // Блокировка интерфейса во избежание двойного нажатия
             btnClearCache.Enabled = false;
             btnPlay.Enabled = false;
-            string originalText = btnClearCache.Text;
-            btnClearCache.Text = "ОЧИСТКА... ПОЖАЛУЙСТА, ПОДОЖДИТЕ";
+            btnClearCache.Text = "ОЧИСТКА...";
 
-            string[] foldersToClean = new string[]
-            {
-                Path.Combine(gmodPath, "cache"),
-                Path.Combine(gmodPath, "downloads"),
-                Path.Combine(gmodPath, "download"),
-                Path.Combine(gmodPath, "bin")
-            };
+            string[] folders = { Path.Combine(gmodPath, "cache"), Path.Combine(gmodPath, "downloads"), Path.Combine(gmodPath, "download") };
 
-            // Перенос тяжелой операции в фоновый Task.Run, чтобы избежать намертво зависшего UI
-            int deletedFilesCount = await Task.Run(() =>
+            int deleted = await Task.Run(() =>
             {
                 int count = 0;
-                foreach (var folder in foldersToClean)
+                foreach (var folder in folders)
                 {
                     if (Directory.Exists(folder))
                     {
@@ -289,10 +434,6 @@ namespace UrfLauncher
                             {
                                 try { File.Delete(file); count++; } catch { }
                             }
-                            foreach (var subDir in Directory.GetDirectories(folder))
-                            {
-                                try { Directory.Delete(subDir, true); } catch { }
-                            }
                         }
                         catch { }
                     }
@@ -300,12 +441,11 @@ namespace UrfLauncher
                 return count;
             });
 
-            // Восстановление UI
-            btnClearCache.Text = originalText;
+            btnClearCache.Text = "ОЧИСТИТЬ КЭШ ИГРЫ";
             btnClearCache.Enabled = true;
             btnPlay.Enabled = true;
 
-            MessageBox.Show($"Очистка успешно завершена!\nУдалено файлов: {deletedFilesCount}.\nРекомендуется перезапустить лаунчер или Steam перед входом.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Очищено файлов: {deleted}.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private async void BtnPlay_Click(object sender, EventArgs e)
@@ -348,16 +488,13 @@ namespace UrfLauncher
                 btnPlay.Text = originalText;
                 btnPlay.Enabled = true;
             }
-            catch (Exception)
+            catch
             {
                 isContentErrorState = true;
                 btnPlay.Enabled = true;
-
                 btnPlay.BackColor = Color.FromArgb(205, 40, 40);
                 btnPlay.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
                 btnPlay.Text = "СКАЧАТЬ В STEAM И ЗАПУСТИТЬ";
-
-                MessageBox.Show("Рекомендуем скачать контент самостоятельно для избежания долгих загрузок и ERROR.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -395,19 +532,14 @@ namespace UrfLauncher
 
             using (Process process = Process.Start(startInfo))
             {
-                if (process == null) throw new Exception("Ошибка запуска SteamCMD.");
+                if (process == null) throw new Exception();
                 process.WaitForExit();
-                if (process.ExitCode != 0) throw new Exception($"SteamCMD ошибка: {process.ExitCode}");
             }
         }
 
         private async Task LoadServerLiveImageAsync(PremiumServer server)
         {
-            if (server.ImageUrls == null || server.ImageUrls.Count == 0)
-            {
-                GenerateProceduralCard(server);
-                return;
-            }
+            if (server.ImageUrls == null || server.ImageUrls.Count == 0) return;
 
             try
             {
@@ -427,12 +559,6 @@ namespace UrfLauncher
                         {
                             g.FillRectangle(lgb, 0, 0, finalBmp.Width, finalBmp.Height);
                         }
-
-                        using (Pen gridPen = new Pen(Color.FromArgb(25, server.AccentColor), 1))
-                        {
-                            for (int i = 0; i < finalBmp.Width; i += 30) g.DrawLine(gridPen, i, 0, i, finalBmp.Height);
-                            for (int j = 0; j < finalBmp.Height; j += 30) g.DrawLine(gridPen, 0, j, finalBmp.Width, j);
-                        }
                     }
 
                     if (selectedServer == server)
@@ -442,60 +568,7 @@ namespace UrfLauncher
                     }
                 }
             }
-            catch
-            {
-                GenerateProceduralCard(server);
-            }
-        }
-
-        private void GenerateProceduralCard(PremiumServer server)
-        {
-            Bitmap bmp = new Bitmap(pbServerScreenshot.Width, pbServerScreenshot.Height);
-            using (Graphics g = Graphics.FromImage(bmp))
-            {
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-
-                using (LinearGradientBrush lgb = new LinearGradientBrush(new Point(0, 0), new Point(bmp.Width, bmp.Height), server.CardColor, Color.FromArgb(10, Color.Black)))
-                {
-                    g.FillRectangle(lgb, 0, 0, bmp.Width, bmp.Height);
-                }
-
-                using (Pen gridPen = new Pen(Color.FromArgb(30, server.AccentColor), 1))
-                {
-                    for (int i = 0; i < bmp.Width; i += 25) g.DrawLine(gridPen, i, 0, i, bmp.Height);
-                    for (int j = 0; j < bmp.Height; j += 25) g.DrawLine(gridPen, 0, j, bmp.Width, j);
-                }
-
-                using (SolidBrush accentBrush = new SolidBrush(Color.FromArgb(100, server.AccentColor)))
-                {
-                    g.FillRectangle(accentBrush, 0, 0, 8, bmp.Height);
-                }
-
-                Font nameFont = new Font("Segoe UI Black", 24, FontStyle.Bold);
-                Size textSize = TextRenderer.MeasureText(server.Name.ToUpper(), nameFont);
-                int posX = (bmp.Width - textSize.Width) / 2;
-                int posY = (bmp.Height - textSize.Height) / 2;
-
-                TextRenderer.DrawText(g, server.Name.ToUpper(), nameFont, new Point(posX + 2, posY + 2), Color.FromArgb(40, server.AccentColor));
-                TextRenderer.DrawText(g, server.Name.ToUpper(), nameFont, new Point(posX, posY), Color.White);
-
-                Font subFont = new Font("Segoe UI", 9, FontStyle.Bold);
-                TextRenderer.DrawText(g, $"// SYSTEM READY // PROTOCOL ACTIVE", subFont, new Point(25, bmp.Height - 35), Color.FromArgb(140, server.AccentColor));
-            }
-
-            if (pbServerScreenshot.Image != null) pbServerScreenshot.Image.Dispose();
-            pbServerScreenshot.Image = bmp;
-        }
-
-        private void AddSocialButton(string text, string url)
-        {
-            Button btn = new Button { Text = text, Font = new Font("Segoe UI Black", 9, FontStyle.Bold), ForeColor = Color.FromArgb(200, 200, 200), FlatStyle = FlatStyle.Flat, AutoSize = true, Cursor = Cursors.Hand, Margin = new Padding(0, 0, 20, 0) };
-            btn.FlatAppearance.BorderSize = 0;
-            btn.FlatAppearance.MouseOverBackColor = Color.Transparent;
-            btn.MouseEnter += (s, e) => { if (selectedServer != null && !isContentErrorState) btn.ForeColor = selectedServer.AccentColor; };
-            btn.MouseLeave += (s, e) => btn.ForeColor = Color.FromArgb(200, 200, 200);
-            btn.Click += (s, e) => Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
-            socialPanel.Controls.Add(btn);
+            catch { }
         }
 
         private GraphicsPath GetRoundRectPath(int x, int y, int width, int height, int radius)
